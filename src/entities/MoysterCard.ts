@@ -1,7 +1,11 @@
 export default class MoysterCard {
-  constructor(private readonly balance: number) {}
+  constructor(private balance: number) {}
 
   public getBalance(): number {
     return this.balance;
+  }
+
+  public setBalance(balance: number): void {
+    this.balance = balance;
   }
 }
