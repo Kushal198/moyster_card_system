@@ -27,4 +27,7 @@ export default class Journey {
     this.exitStation = station;
     this.endTime = new Date();
   }
+  public isComplete(): boolean {
+    return this.exitStation !== null;
+  }
 }

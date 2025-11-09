@@ -32,6 +32,13 @@ We have two main actors in our system:
     The system is responsible for managing the fare calculation and fare capping. It records journeys, calculates fares based on zones and peak/off-peak timings, applies daily and weekly caps, and provides the commuter with their total fare.
 
 ---
+## 🧱 Architecture Diagrams
+
+### 🧩 Use Case Diagram
+![Use Case Diagram](./moyester-card.png)
+
+### 🏗️ Class Diagram
+![Class Diagram](./moyster_class_card.svg)
 
 
 To run the project and see the tests in action, follow these steps:

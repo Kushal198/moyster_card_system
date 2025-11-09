@@ -1,7 +1,7 @@
 import { Journey, Station } from "../../entities";
 import { describe, it, expect } from "vitest";
 
-describe("Journey entry tapIn behavior", () => {
+describe("Journey creation", () => {
   it("should create journey with given name and zoneId", () => {
     const entry = new Station("Londonium Bridge Station", 1);
     const journey = new Journey(entry);
@@ -13,7 +13,7 @@ describe("Journey entry tapIn behavior", () => {
   });
 });
 
-describe("Journey exit tapOut behavior", () => {
+describe("Journey completion", () => {
   it("should start with null exit station and null end time", () => {
     const entry = new Station("Londonium Bridge Station", 1);
     const journey = new Journey(entry);
