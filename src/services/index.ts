@@ -3,5 +3,5 @@
  *
  * This directory contains business logic and service implementations.
  */
-
-export {};
+import FareCalculationService from "./FareCalculationService";
+export { FareCalculationService };

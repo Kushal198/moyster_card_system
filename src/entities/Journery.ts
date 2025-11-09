@@ -20,6 +20,13 @@ export default class Journey {
     return this.endTime;
   }
 
+  getStartTime(): Date {
+    return this.startTime;
+  }
+  public setStartTime(time: Date): void {
+    this.startTime = time;
+  }
+
   public setExitStation(station: Station): void {
     if (this.exitStation) {
       throw new Error("Journey is already completed");
