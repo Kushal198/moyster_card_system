@@ -5,7 +5,8 @@ export default class Journey {
     private entryStation: Station,
     private exitStation: Station | null = null,
     private startTime: Date = new Date(),
-    private endTime: Date | null = null
+    private endTime: Date | null = null,
+    public farePaid: number = 0
   ) {}
 
   public getEntryStation(): Station {

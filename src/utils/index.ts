@@ -1,3 +1,5 @@
+import { Journey } from "../entities";
+
 /**
  * Utils Directory
  *
@@ -7,6 +9,11 @@
 type hoursMap = {
   peak: number;
   nonPeak: number;
+};
+
+type capMap = {
+  daily: number;
+  weekly: number;
 };
 
 const fares: Record<string, hoursMap> = {
@@ -25,4 +32,26 @@ const peakHours: Record<string, Record<string, number>[]> = {
     { start: 18, end: 22 },
   ],
 };
-export { fares, peakHours };
+
+const caps: Record<string, capMap> = {
+  "1-1": { daily: 100, weekly: 500 },
+  "1-2": { daily: 120, weekly: 600 },
+  "2-2": { daily: 80, weekly: 400 },
+};
+
+function getFarthestZoneRange(journeys: Journey[]): string {
+  let maxRange = [1, 1];
+
+  for (const j of journeys) {
+    const from = j.getEntryStation().getZone();
+    const to = j.getExitStation()?.getZone() ?? from;
+    const low = Math.min(from, to);
+    const high = Math.max(from, to);
+
+    if (high > maxRange[1]) maxRange = [low, high];
+  }
+
+  return `${maxRange[0]}-${maxRange[1]}`;
+}
+
+export { fares, peakHours, caps, getFarthestZoneRange };

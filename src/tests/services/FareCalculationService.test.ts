@@ -14,12 +14,21 @@ describe("Fare Calculation Service", () => {
     card = new MoysterCard(20);
   });
 
+  /*Off-Peak hours for weekdays zone pair 2-1 */
+  it("should charge off-peak hour fare for zone pair 2-1 on weekdays", () => {
+    const journey = card.startJourney(station3);
+    journey.setStartTime(new Date("2025-11-10T13:00:00")); //monday
+    card.completeJourney(station1);
+    const fare = FareCalculationService.calculateFare(journey);
+    expect(fare).toBe(30);
+  });
+
   /*Peak hours for weekdays zone pair 1-1 */
   it("should charge peak hour fare for zone pair 1-1 on weekdays", () => {
     const journey = card.startJourney(station1);
     journey.setStartTime(new Date("2025-11-10T08:00:00"));
     card.completeJourney(station2);
-    const fare = new FareCalculationService().calculateFare(journey);
+    const fare = FareCalculationService.calculateFare(journey);
     expect(fare).toBe(30);
   });
 
@@ -28,7 +37,7 @@ describe("Fare Calculation Service", () => {
     const journey = card.startJourney(station1);
     journey.setStartTime(new Date("2025-11-10T08:00:00"));
     card.completeJourney(station3);
-    const fare = new FareCalculationService().calculateFare(journey);
+    const fare = FareCalculationService.calculateFare(journey);
     expect(fare).toBe(35);
   });
 
@@ -37,34 +46,25 @@ describe("Fare Calculation Service", () => {
     const journery = card.startJourney(station3);
     journery.setStartTime(new Date("2025-11-10T08:00:00"));
     card.completeJourney(station4);
-    const fare = new FareCalculationService().calculateFare(journery);
+    const fare = FareCalculationService.calculateFare(journery);
     expect(fare).toBe(25);
   });
 
   /*Off-Peak hours for weekdays zone pair 1-1 */
   it("should charge off-peak hour fare for zone pari 1-1 on weekdays", () => {
     const journey = card.startJourney(station1);
-    journey.setStartTime(new Date("2025-11-10T013:00:00"));
+    journey.setStartTime(new Date("2025-11-10T13:00:00"));
     card.completeJourney(station2);
-    const fare = new FareCalculationService().calculateFare(journey);
+    const fare = FareCalculationService.calculateFare(journey);
     expect(fare).toBe(25);
-  });
-
-  /*Off-Peak hours for weekdays zone pair 1-2 */
-  it("should charge off-peak hour fare for zone pair 1-2 on weekdays", () => {
-    const journey = card.startJourney(station1);
-    journey.setStartTime(new Date("2025-11-10T013:00:00"));
-    card.completeJourney(station3);
-    const fare = new FareCalculationService().calculateFare(journey);
-    expect(fare).toBe(30);
   });
 
   /*Off-Peak hours for weekdays zone pair 2-2 */
   it("should charge off-peak hour fare for zone pair 2-2 on weekdays", () => {
     const journey = card.startJourney(station3);
-    journey.setStartTime(new Date("2025-11-10T013:00:00"));
+    journey.setStartTime(new Date("2025-11-10T13:00:00"));
     card.completeJourney(station4);
-    const fare = new FareCalculationService().calculateFare(journey);
+    const fare = FareCalculationService.calculateFare(journey);
     expect(fare).toBe(20);
   });
 
@@ -73,7 +73,7 @@ describe("Fare Calculation Service", () => {
     const journey = card.startJourney(station1);
     journey.setStartTime(new Date("2025-09-10T09:00:00"));
     card.completeJourney(station3);
-    const fare = new FareCalculationService().calculateFare(journey);
+    const fare = FareCalculationService.calculateFare(journey);
     expect(fare).toBe(35);
   });
   /*Peak hours for (Sat-Sun)weekends zone pair 1-1 */
@@ -81,7 +81,7 @@ describe("Fare Calculation Service", () => {
     const journey = card.startJourney(station1);
     journey.setStartTime(new Date("2025-09-10T09:00:00"));
     card.completeJourney(station2);
-    const fare = new FareCalculationService().calculateFare(journey);
+    const fare = FareCalculationService.calculateFare(journey);
     expect(fare).toBe(30);
   });
   /*Peak hours for (Sat-Sun)weekends zone pair 2-2 */
@@ -89,7 +89,7 @@ describe("Fare Calculation Service", () => {
     const journey = card.startJourney(station3);
     journey.setStartTime(new Date("2025-09-10T09:00:00"));
     card.completeJourney(station4);
-    const fare = new FareCalculationService().calculateFare(journey);
+    const fare = FareCalculationService.calculateFare(journey);
     expect(fare).toBe(25);
   });
 });

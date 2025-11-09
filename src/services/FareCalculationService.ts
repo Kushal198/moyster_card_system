@@ -4,12 +4,21 @@ import { fares, peakHours } from "../utils";
 export default class FareCalculationService {
   constructor() {}
 
-  public calculateFare(journey: Journey): number {
+  public static calculateFare(journey: Journey): number {
     if (!journey.getExitStation()) {
       throw new Error("Journey is not complete");
     }
-    const fromZone = journey.getEntryStation().getZone();
-    const toZone = journey.getExitStation()?.getZone();
+
+    //need to implement max fare for non-exit
+    let fromZone = Math.min(
+      journey.getEntryStation().getZone(),
+      journey.getExitStation()?.getZone() || 0
+    );
+    let toZone = Math.max(
+      journey.getEntryStation().getZone(),
+      journey.getExitStation()?.getZone() || 0
+    );
+
     const key: string = `${fromZone}-${toZone}`;
     const date = journey.getStartTime();
 
@@ -18,14 +27,13 @@ export default class FareCalculationService {
     const dayType = isWeekend ? "weekend" : "weekday";
 
     const hours = date.getHours();
+
     //8>7 && 8<10
     const isPeak =
       (hours >= peakHours[dayType][0]["start"] &&
         hours <= peakHours[dayType][0]["end"]) ||
       (hours >= peakHours[dayType][1]["start"] &&
         hours <= peakHours[dayType][1]["end"]);
-
-    console.log(isPeak);
 
     return isPeak ? fares[key].peak : fares[key].nonPeak;
   }
