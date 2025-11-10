@@ -5,8 +5,12 @@ export default class MoysterCard {
   public dailyTotals: Record<string, number> = {}; // key = YYYY-MM-DD
   public weeklyTotals: Record<string, number> = {}; // key = weekStart (YYYY-MM-DD)
   public journeysByDate: Record<string, Journey[]> = {};
+  private balance: number;
 
-  constructor(private balance: number) {}
+  constructor(balance: number) {
+    if (balance < 0) throw new Error("Negative balance");
+    this.balance = balance;
+  }
 
   public getBalance(): number {
     return this.balance;
@@ -45,6 +49,10 @@ export default class MoysterCard {
     this.weeklyTotals[weekKey] =
       (this.weeklyTotals[weekKey] || 0) + journey.farePaid;
     return journey;
+  }
+
+  public deductBalance(amount: number): void {
+    this.balance -= amount;
   }
 
   getJourneysByDate(date: string): Journey[] {

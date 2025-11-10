@@ -8,6 +8,14 @@ describe("MoysterCard", () => {
   });
 });
 
+describe("MoysterCard Balance Check", () => {
+  it("should throw error if balance is negative", () => {
+    expect(() => {
+      new MoysterCard(-10);
+    }).toThrow("Negative balance");
+  });
+});
+
 describe("MoysterCard Journey", () => {
   it("should start a new journey and store it in journeys array", () => {
     const card = new MoysterCard(100);

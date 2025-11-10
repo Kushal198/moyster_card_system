@@ -16,7 +16,7 @@ describe("CappingService - Daily Cap Scenario", () => {
       1: new Station("Londonium Bridge Station", 1),
       2: new Station("Hammersmith", 2),
     };
-    card = new MoysterCard(200); // enough balance
+    card = new MoysterCard(800); // enough balance
   });
 
   it("should apply daily cap correctly for multiple journeys", () => {
@@ -37,6 +37,7 @@ describe("CappingService - Daily Cap Scenario", () => {
       .getJourneysByDate(today.toDateString())
       .reduce((sum, j) => sum + (j.farePaid ?? 0), 0);
 
+    expect(card.getBalance()).toBe(680);
     expect(totalCharged).toBe(120);
   });
 });
@@ -50,7 +51,7 @@ describe("CappingService - Weekly Cap Scenario", () => {
       1: new Station("Zone1Station", 1),
       2: new Station("Zone2Station", 2),
     };
-    card = new MoysterCard(500);
+    card = new MoysterCard(1000);
   });
 
   it("should apply weekly cap correctly for multiple journeys", () => {
@@ -69,6 +70,7 @@ describe("CappingService - Weekly Cap Scenario", () => {
       // Apply capping
       FareCappingService.adjustFare(card, journey, fare);
     }
+    expect(card.getBalance()).toBe(245);
     expect(card.weeklyTotals["2025-11-03"]).toBe(weeklyCap);
   });
 });

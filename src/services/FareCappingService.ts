@@ -59,5 +59,6 @@ export default class FareCappingService {
     card.dailyTotals[dateKey] = dailyTotal + adjustedFare;
     card.weeklyTotals[weekKey] = weeklyTotal + adjustedFare;
     journey.farePaid = Math.max(0, adjustedFare);
+    card.deductBalance(adjustedFare);
   }
 }
