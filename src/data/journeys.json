@@ -3,6 +3,5 @@
   { "time": "2025-11-10T10:45:00", "fromZone": 1, "toZone": 1 },
   { "time": "2025-11-10T16:15:00", "fromZone": 1, "toZone": 1 },
   { "time": "2025-11-10T18:15:00", "fromZone": 1, "toZone": 1 },
-  { "time": "2025-11-10T19:00:00", "fromZone": 1, "toZone": 2 },
-  { "time": "2025-11-11T10:20:00", "fromZone": 2, "toZone": 1 }
+  { "time": "2025-11-10T19:00:00", "fromZone": 1, "toZone": 2 }
 ]

@@ -1,17 +1,13 @@
 import Station from "./Station";
 
 export default class Journey {
-  private startTime: Date;
+  public farePaid: number = 0;
   constructor(
     private entryStation: Station,
-    startTime?: Date,
+    private startTime: Date,
     private exitStation: Station | null = null,
-    private endTime: Date | null = null,
-
-    public farePaid: number = 0
-  ) {
-    this.startTime = startTime || new Date();
-  }
+    private endTime: Date | null = null
+  ) {}
 
   public getEntryStation(): Station {
     return this.entryStation;

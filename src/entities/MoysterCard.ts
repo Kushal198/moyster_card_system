@@ -2,11 +2,11 @@ import Journey from "./Journery";
 import Station from "./Station";
 
 export default class MoysterCard {
-  constructor(
-    private balance: number,
-    // private journeys: Journey[] = [],
-    public journeysByDate: Record<string, Journey[]> = {}
-  ) {}
+  public dailyTotals: Record<string, number> = {}; // key = YYYY-MM-DD
+  public weeklyTotals: Record<string, number> = {}; // key = weekStart (YYYY-MM-DD)
+  public journeysByDate: Record<string, Journey[]> = {};
+
+  constructor(private balance: number) {}
 
   public getBalance(): number {
     return this.balance;
@@ -15,12 +15,35 @@ export default class MoysterCard {
   public setBalance(balance: number): void {
     this.balance = balance;
   }
+  private getWeekStart(date: Date): Date {
+    const d = new Date(date);
+    const day = d.getDay(); // 0 (Sun) - 6 (Sat)
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
+    return new Date(d.setDate(diff));
+  }
+  private getDateKey(date: Date): string {
+    return date.toISOString().split("T")[0];
+  }
+
+  private getWeekKey(date: Date): string {
+    const weekStart = this.getWeekStart(date);
+    return weekStart.toISOString().split("T")[0];
+  }
 
   public startJourney(entryStation: Station, startTime?: Date): Journey {
     const journey = new Journey(entryStation, startTime || new Date());
     const date = journey.getStartTime().toDateString();
     if (!this.journeysByDate[date]) this.journeysByDate[date] = [];
     this.journeysByDate[date].push(journey);
+    const dateKey = this.getDateKey(journey.getStartTime());
+    const weekKey = this.getWeekKey(journey.getStartTime());
+    // Update daily total
+    this.dailyTotals[dateKey] =
+      (this.dailyTotals[dateKey] || 0) + journey.farePaid;
+
+    // Update weekly total
+    this.weeklyTotals[weekKey] =
+      (this.weeklyTotals[weekKey] || 0) + journey.farePaid;
     return journey;
   }
 

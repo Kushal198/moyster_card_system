@@ -4,7 +4,7 @@ import { describe, it, expect } from "vitest";
 describe("Journey creation", () => {
   it("should create journey with given name and zoneId", () => {
     const entry = new Station("Londonium Bridge Station", 1);
-    const journey = new Journey(entry);
+    const journey = new Journey(entry, new Date());
 
     expect(journey.getEntryStation().getName()).toBe(
       "Londonium Bridge Station"
@@ -16,7 +16,7 @@ describe("Journey creation", () => {
 describe("Journey completion", () => {
   it("should start with null exit station and null end time", () => {
     const entry = new Station("Londonium Bridge Station", 1);
-    const journey = new Journey(entry);
+    const journey = new Journey(entry, new Date());
 
     expect(journey.getExitStation()).toBeNull();
     expect(journey.getEndTime()).toBeNull();
@@ -26,7 +26,7 @@ describe("Journey completion", () => {
     const entry = new Station("Londonium Bridge Station", 1);
     const exit = new Station("Earl's Court", 2);
 
-    const journey = new Journey(entry);
+    const journey = new Journey(entry, new Date());
     journey.setExitStation(exit);
 
     expect(journey.getExitStation()).toBe(exit);
@@ -38,7 +38,7 @@ describe("Journey completion", () => {
     const exit1 = new Station("Earl's Court", 2);
     const exit2 = new Station("Hammersmith", 2);
 
-    const journey = new Journey(entry);
+    const journey = new Journey(entry, new Date());
     journey.setExitStation(exit1);
 
     // second tap-out attempt
