@@ -12,11 +12,11 @@ describe("MoysterCard Journey", () => {
   it("should start a new journey and store it in journeys array", () => {
     const card = new MoysterCard(100);
     const entry = new Station("Londonium Bridge Station", 1);
-
-    const journey = card.startJourney(entry);
-
-    expect(card.getJourneys().length).toBe(1);
-    expect(card.getJourneys()[0]).toBe(journey);
+    const journey = card.startJourney(entry, new Date("2025-11-10T00:01:00"));
+    expect(card.getJourneysByDate(new Date().toDateString())).to.have.lengthOf(
+      1
+    );
+    expect(card.getJourneysByDate(new Date().toDateString())[0]).toBe(journey);
     expect(journey.getEntryStation().getName()).toBe(
       "Londonium Bridge Station"
     );
@@ -27,8 +27,8 @@ describe("MoysterCard Journey", () => {
     const entry = new Station("Holborn", 1);
     const exit = new Station("Bank", 1);
 
-    card.startJourney(entry);
-    const journey = card.completeJourney(exit);
+    const journey = card.startJourney(entry, new Date("2025-11-10T00:01:00"));
+    card.completeJourney(exit, journey);
 
     expect(journey.getExitStation()).toBe(exit);
     expect(journey.getEndTime()).toBeInstanceOf(Date);

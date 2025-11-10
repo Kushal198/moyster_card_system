@@ -1,0 +1,29 @@
+[
+    { "date": "2025-11-03T08:15:00", "fromZone": 1, "toZone": 2 },
+    { "date": "2025-11-03T09:00:00", "fromZone": 2, "toZone": 1 },
+    { "date": "2025-11-03T12:30:00", "fromZone": 1, "toZone": 1 },
+    { "date": "2025-11-03T18:45:00", "fromZone": 1, "toZone": 2 },
+    { "date": "2025-11-03T20:00:00", "fromZone": 1, "toZone": 1 },
+  
+    { "date": "2025-11-04T08:10:00", "fromZone": 1, "toZone": 2 },
+    { "date": "2025-11-04T09:00:00", "fromZone": 2, "toZone": 1 },
+    { "date": "2025-11-04T17:15:00", "fromZone": 1, "toZone": 2 },
+  
+    { "date": "2025-11-05T08:05:00", "fromZone": 1, "toZone": 2 },
+    { "date": "2025-11-05T18:20:00", "fromZone": 2, "toZone": 1 },
+  
+    { "date": "2025-11-06T07:55:00", "fromZone": 1, "toZone": 2 },
+    { "date": "2025-11-06T18:30:00", "fromZone": 1, "toZone": 2 },
+  
+    { "date": "2025-11-07T10:00:00", "fromZone": 1, "toZone": 1 },
+    { "date": "2025-11-07T17:00:00", "fromZone": 1, "toZone": 2 },
+  
+    { "date": "2025-11-08T10:30:00", "fromZone": 1, "toZone": 2 },
+    { "date": "2025-11-08T18:30:00", "fromZone": 2, "toZone": 1 },
+  
+    { "date": "2025-11-09T09:00:00", "fromZone": 1, "toZone": 2 },
+    { "date": "2025-11-09T11:00:00", "fromZone": 2, "toZone": 1 },
+  
+    { "date": "2025-11-10T09:00:00", "fromZone": 1, "toZone": 2 }
+  ]
+  

@@ -1,45 +1,94 @@
 import { Journey, MoysterCard } from "../entities";
 import FareCalculationService from "./FareCalculationService";
-import { caps, getFarthestZoneRange } from "../utils";
+import { caps, getFarthestZoneRange, getWeekEnd, getWeekStart } from "../utils";
 
 export default class FareCappingService {
   constructor() {}
+
+  public static applyDailyCap(
+    card: MoysterCard,
+    journey: Journey,
+    originalFare: number
+  ): number {
+    const journeyDate = journey.getStartTime().toDateString();
+
+    // const totalJourneys = card
+    //   .getJourneys()
+    //   .filter(
+    //     (j) =>
+    //       j.getStartTime().toDateString() === journeyDate && j.getExitStation()
+    //   );
+    const totalJourneys = card
+      .getJourneysByDate(journeyDate)
+      .filter(
+        (j) =>
+          j.getStartTime().toDateString() === journeyDate && j.getExitStation()
+      );
+
+    const capKey = getFarthestZoneRange(totalJourneys);
+    const dailyCap = caps[capKey].daily;
+
+    const totalSoFar = totalJourneys
+      .filter((j) => j !== journey)
+      .reduce((acc, j) => acc + (j.farePaid ?? 0), 0);
+
+    let adjustedFare = originalFare;
+    if (totalSoFar + originalFare > dailyCap) {
+      adjustedFare = Math.max(0, dailyCap - totalSoFar);
+    }
+
+    return adjustedFare;
+  }
+
+  public static applyWeeklyCap(
+    card: MoysterCard,
+    journey: Journey,
+    adjustedFare: number
+  ) {
+    const weekStart = getWeekStart(journey.getStartTime());
+    const weekEnd = getWeekEnd(weekStart);
+
+    // const weekJourneys = card.getJourneys().filter((j) => {
+    //   const d = j.getStartTime();
+    //   return d >= weekStart && d <= weekEnd && j.getExitStation();
+    // });
+    const journeyDate = journey.getStartTime().toDateString();
+    const weekJourneys = card.getJourneysByDate(journeyDate).filter((j) => {
+      const d = j.getStartTime();
+      return d >= weekStart && d <= weekEnd && j.getExitStation();
+    });
+
+    const capKey = getFarthestZoneRange(weekJourneys);
+    const weeklyCap = caps[capKey].weekly;
+
+    const totalWeekSoFar = weekJourneys
+      .filter((j) => j !== journey)
+      .reduce((acc, j) => acc + (j.farePaid ?? 0), 0);
+
+    if (totalWeekSoFar + adjustedFare > weeklyCap) {
+      return Math.max(0, weeklyCap - totalWeekSoFar);
+    }
+
+    return adjustedFare;
+  }
 
   public static adjustFare(
     card: MoysterCard,
     journey: Journey,
     originalFare: number
   ): number {
-    //need to implement max fare for non-exit
-    let fromZone = Math.min(
-      journey.getEntryStation().getZone(),
-      journey.getExitStation()?.getZone() || 0
-    );
-    let toZone = Math.max(
-      journey.getEntryStation().getZone(),
-      journey.getExitStation()?.getZone() || 0
-    );
-    const key: string = `${fromZone}-${toZone}`;
-    const journeyDate = journey.getStartTime().toDateString();
-    const totalJourney = card
-      .getJourneys()
-      .filter(
-        (j) =>
-          j.getStartTime().toDateString() === journeyDate && j.getExitStation()
-      );
-    const capKey = getFarthestZoneRange(totalJourney);
-    let dailyCap = caps[capKey].daily;
-    const totalSoFar = totalJourney
-      .filter((j) => j != journey)
-      .reduce((acc, j) => acc + FareCalculationService.calculateFare(j), 0);
+    // 🔹 Step 1: Apply daily cap
+    let dailyAdjustedFare = this.applyDailyCap(card, journey, originalFare);
 
-    let adjustedFare = originalFare;
+    // 🔹 Step 2: Apply weekly cap (based on same card + journey)
+    const finalAdjustedFare = this.applyWeeklyCap(
+      card,
+      journey,
+      dailyAdjustedFare
+    );
 
-    if (totalSoFar + originalFare > dailyCap) {
-      //100 + 35>120
-      adjustedFare = Math.max(0, dailyCap - totalSoFar); //120-100=20 -> 35-20=15
-    }
-    journey.farePaid = adjustedFare;
-    return adjustedFare;
+    // 🔹 Step 3: Store fare and return
+    journey.farePaid = finalAdjustedFare;
+    return finalAdjustedFare;
   }
 }
