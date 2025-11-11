@@ -1,8 +1,16 @@
 import { Journey, MoysterCard, Station, Zone } from "../../entities";
-import { FareRuleRepository, PeakHourRepository } from "../../interfaces";
+import {
+  FareCappingService,
+  FareRuleRepository,
+  PeakHourRepository,
+} from "../../interfaces";
 import { FareRuleRepositoryImpl } from "../../repository/FareRuleRepositoryImpl";
 import { PeakHourRepositoryImpl } from "../../repository/PeakHourRepositoryImpl";
-import { FareCalulationServiceImpl, MoysterCardService } from "../../services";
+import {
+  FareCalulationServiceImpl,
+  FareCappingServiceImpl,
+  MoysterCardService,
+} from "../../services";
 
 import { describe, it, expect, beforeEach } from "vitest";
 import FareCalculationServiceImpl from "../../services/FareCalculationServiceImpl";
@@ -10,6 +18,7 @@ import FareCalculationServiceImpl from "../../services/FareCalculationServiceImp
 describe("Fare Calculation Service", () => {
   let card: MoysterCard;
   let cardService: MoysterCardService;
+  let fareCappingService: FareCappingService;
 
   const station1 = new Station("Londonium Bridge Station", new Zone(1));
   const station2 = new Station("Bank", new Zone(1));
@@ -21,20 +30,12 @@ describe("Fare Calculation Service", () => {
     const fareRepo: FareRuleRepository = new FareRuleRepositoryImpl();
     const peakRepo: PeakHourRepository = new PeakHourRepositoryImpl();
     const fareCalculator = new FareCalculationServiceImpl(fareRepo, peakRepo);
-    cardService = new MoysterCardService(fareCalculator);
+    const fareCappingService = new FareCappingServiceImpl();
+    cardService = new MoysterCardService(fareCalculator, fareCappingService);
   });
 
   /*Off-Peak hours for weekdays zone pair 2-1 */
   it("should charge off-peak hour fare for zone pair 2-1 on weekdays", () => {
-    // const journey = cardService.startJourney(
-    //   station3,
-    //   new Date("2025-11-10T13:00:00")
-    // );
-    // cardService.completeJourney(station1, journey);
-    // const fare = FareCalculationService.calculateFare(journey);
-    // card.deductBalance(fare);
-    // expect(fare).toBe(30);
-    // expect(card.getBalance()).toBe(170);
     const journey = cardService.startJourney(
       card,
       station3,
@@ -44,7 +45,7 @@ describe("Fare Calculation Service", () => {
     const fare = journey.getFarePaid();
 
     expect(fare).toBe(30);
-    // expect(card.getBalance()).toBe(170);
+    expect(card.getBalance()).toBe(170);
   });
 
   /*Peak hours for weekdays zone pair 1-1 */
@@ -56,9 +57,7 @@ describe("Fare Calculation Service", () => {
     );
     cardService.completeJourney(card, station2, journey);
     const fare = journey.getFarePaid();
-    // const fare = FareCalculationService.calculateFare(journey);
-    // card.deductBalance(fare);
-    // expect(card.getBalance()).toBe(170);
+    expect(card.getBalance()).toBe(170);
     expect(fare).toBe(30);
   });
 
@@ -72,7 +71,7 @@ describe("Fare Calculation Service", () => {
     cardService.completeJourney(card, station3, journey);
     const fare = journey.getFarePaid();
 
-    // expect(card.getBalance()).toBe(165);
+    expect(card.getBalance()).toBe(165);
     expect(fare).toBe(35);
   });
 
@@ -85,7 +84,7 @@ describe("Fare Calculation Service", () => {
     );
     cardService.completeJourney(card, station4, journery);
     const fare = journery.getFarePaid();
-    // expect(card.getBalance()).toBe(175);
+    expect(card.getBalance()).toBe(175);
     expect(fare).toBe(25);
   });
 
@@ -98,8 +97,7 @@ describe("Fare Calculation Service", () => {
     );
     cardService.completeJourney(card, station2, journey);
     const fare = journey.getFarePaid();
-
-    // expect(card.getBalance()).toBe(175);
+    expect(card.getBalance()).toBe(175);
     expect(fare).toBe(25);
   });
 
@@ -112,8 +110,7 @@ describe("Fare Calculation Service", () => {
     );
     cardService.completeJourney(card, station4, journey);
     const fare = journey.getFarePaid();
-    // cardService.deductBalance(fare);
-    // expect(card.getBalance()).toBe(180);
+    expect(card.getBalance()).toBe(180);
     expect(fare).toBe(20);
   });
 
@@ -127,7 +124,7 @@ describe("Fare Calculation Service", () => {
     cardService.completeJourney(card, station3, journey);
     const fare = journey.getFarePaid();
 
-    // expect(card.getBalance()).toBe(165);
+    expect(card.getBalance()).toBe(165);
     expect(fare).toBe(35);
   });
 
@@ -141,7 +138,7 @@ describe("Fare Calculation Service", () => {
     cardService.completeJourney(card, station2, journey);
     const fare = journey.getFarePaid();
 
-    // expect(card.getBalance()).toBe(170);
+    expect(card.getBalance()).toBe(170);
     expect(fare).toBe(30);
   });
 
@@ -154,8 +151,7 @@ describe("Fare Calculation Service", () => {
     );
     cardService.completeJourney(card, station4, journey);
     const fare = journey.getFarePaid();
-
-    // expect(card.getBalance()).toBe(175);
+    expect(card.getBalance()).toBe(175);
     expect(fare).toBe(25);
   });
 });

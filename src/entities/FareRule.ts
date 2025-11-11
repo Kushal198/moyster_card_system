@@ -8,6 +8,17 @@ export default class FareRule {
     private readonly nonPeakFare: number
   ) {}
 
+  /**
+   * Checks if this fare rule applies for a given zone pair.
+   *
+   * A rule is considered a match if the journey's from/to zones
+   * are the same as the rule's zones, regardless of direction.
+   *
+   * Example:
+   *   FareRule(Zone 1, Zone 2) will match both:
+   *     - Journey from Zone 1 to Zone 2
+   *     - Journey from Zone 2 to Zone 1
+   */
   matches(from: Zone, to: Zone): boolean {
     return (
       (this.fromZone.getId() === from.getId() &&

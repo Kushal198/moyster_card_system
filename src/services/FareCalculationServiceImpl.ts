@@ -4,6 +4,7 @@ import {
   PeakHourRepository,
   FareCalculationService,
 } from "../interfaces";
+import { getIsPeak } from "../utils";
 
 export default class FareCalculationServiceImpl
   implements FareCalculationService
@@ -22,7 +23,10 @@ export default class FareCalculationServiceImpl
   public calculateFare(journey: Journey): number {
     if (!journey.getExitStation()) {
       // Handle maximum fare for incomplete journey
-      return this.getMaxFare(journey.getEntryStation().getZone().getId());
+      return this.getMaxFare(
+        journey.getEntryStation().getZone().getId(),
+        journey.getStartTime()
+      );
     }
 
     const fromZone = new Zone(journey.getEntryStation().getZone().getId());
@@ -40,15 +44,16 @@ export default class FareCalculationServiceImpl
     return fareRule.getFare(isPeak);
   }
 
-  public getMaxFare(fromZoneId: number): number {
+  public getMaxFare(fromZoneId: number, startTime: Date): number {
     // Optional: you can define max fare logic dynamically
     // For now, assume max fare is the highest peak fare from this zone
-    const fromZone = new Zone(fromZoneId);
-    const allRules = this.fareRuleRepo.getAllRules();
+    const fromZone = new Zone(fromZoneId); //1
+    const allRules = this.fareRuleRepo.getAllRules(); //[new FareRule(new Zone(1), new Zone(1), 30, 25)]
     const relevantRules = allRules.filter((rule) =>
       rule.matches(fromZone, fromZone)
     );
+    let isPeak = getIsPeak(startTime);
     if (!relevantRules.length) return 0;
-    return Math.max(...relevantRules.map((r) => r.getFare(true))); // peak fare as max
+    return Math.max(...relevantRules.map((r) => r.getFare(isPeak))); // peak fare as max can be changed later dynamically
   }
 }

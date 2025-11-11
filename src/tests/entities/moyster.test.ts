@@ -1,25 +1,38 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { MoysterCard, Station, Zone, Journey } from "../../entities";
-import { FareCalulationServiceImpl } from "../../services";
+import {
+  FareCalulationServiceImpl,
+  FareCappingServiceImpl,
+} from "../../services";
 import { MoysterCardService } from "../../services";
-import { FareRuleRepository, PeakHourRepository } from "../../interfaces";
+import {
+  FareCappingService,
+  FareRuleRepository,
+  PeakHourRepository,
+} from "../../interfaces";
 import { FareRuleRepositoryImpl } from "../../repository/FareRuleRepositoryImpl";
 import { PeakHourRepositoryImpl } from "../../repository/PeakHourRepositoryImpl";
 
 describe("MoysterCard Integration with JourneyService", () => {
   let card: MoysterCard;
   let cardService: MoysterCardService;
+  let fareCappingService: FareCappingService;
+  let zone1: Zone;
+  let zone2: Zone;
 
   beforeEach(() => {
     card = new MoysterCard(200);
+    zone1 = new Zone(1);
+    zone2 = new Zone(2);
     const fareRepo: FareRuleRepository = new FareRuleRepositoryImpl();
     const peakRepo: PeakHourRepository = new PeakHourRepositoryImpl();
     const fareCalculator = new FareCalulationServiceImpl(fareRepo, peakRepo);
-    cardService = new MoysterCardService(fareCalculator);
+    const fareCappingService = new FareCappingServiceImpl();
+    cardService = new MoysterCardService(fareCalculator, fareCappingService);
   });
 
   it("should start a new journey and store it in the card", () => {
-    const entry = new Station("Londonium Bridge Station", new Zone(1));
+    const entry = new Station("Londonium Bridge Station", zone1);
     const journeyDate = new Date("2025-11-10T08:00:00"); // peak hour
     const journey = cardService.startJourney(card, entry, journeyDate);
 
@@ -35,8 +48,8 @@ describe("MoysterCard Integration with JourneyService", () => {
   });
 
   it("should complete the last incomplete journey and update exitStation", () => {
-    const entry = new Station("Holborn", new Zone(1));
-    const exit = new Station("Bank", new Zone(1));
+    const entry = new Station("Holborn", zone1);
+    const exit = new Station("Bank", zone1);
     const journeyDate = new Date("2025-11-10T09:00:00"); // peak hour
 
     const journey = cardService.startJourney(card, entry, journeyDate);
@@ -48,10 +61,10 @@ describe("MoysterCard Integration with JourneyService", () => {
   });
 
   it("should handle multiple journeys on the same day", () => {
-    const entry1 = new Station("Holborn", new Zone(1));
-    const exit1 = new Station("Bank", new Zone(1));
-    const entry2 = new Station("Earl's Court", new Zone(2));
-    const exit2 = new Station("Victoria", new Zone(1));
+    const entry1 = new Station("Holborn", zone1);
+    const exit1 = new Station("Bank", zone1);
+    const entry2 = new Station("Earl's Court", zone2);
+    const exit2 = new Station("Victoria", zone1);
     const journeyDate = new Date("2025-11-10T10:00:00");
 
     const journey1 = cardService.startJourney(card, entry1, journeyDate);

@@ -72,7 +72,7 @@ function getWeekEnd(weekStart: Date): Date {
   end.setHours(23, 59, 59, 999);
   return end;
 }
-function isPeak(date: Date): boolean {
+function getIsPeak(date: Date): boolean {
   const dayType =
     date.getDay() === 0 || date.getDay() === 6 ? "weekend" : "weekday";
   const minutes = date.getHours() * 60 + date.getMinutes();
@@ -99,7 +99,7 @@ export {
   getFarthestZoneRange,
   getWeekStart,
   getWeekEnd,
-  isPeak,
+  getIsPeak,
   Helper,
   PeakHourRule,
   FareCap,

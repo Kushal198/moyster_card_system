@@ -1,9 +1,17 @@
 import { Journey, Station, Zone } from "../../entities";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 
 describe("Journey creation", () => {
+  let zone1: Zone;
+  let zone2: Zone;
+
+  beforeEach(() => {
+    zone1 = new Zone(1);
+    zone2 = new Zone(2);
+  });
+
   it("should create journey with given name and zoneId", () => {
-    const entry = new Station("Londonium Bridge Station", new Zone(1));
+    const entry = new Station("Londonium Bridge Station", zone1);
     const journey = new Journey(entry, new Date());
 
     expect(journey.getEntryStation().getName()).toBe(
@@ -14,8 +22,16 @@ describe("Journey creation", () => {
 });
 
 describe("Journey completion", () => {
+  let zone1: Zone;
+  let zone2: Zone;
+
+  beforeEach(() => {
+    zone1 = new Zone(1);
+    zone2 = new Zone(2);
+  });
+
   it("should start with null exit station and null end time", () => {
-    const entry = new Station("Londonium Bridge Station", new Zone(1));
+    const entry = new Station("Londonium Bridge Station", zone1);
     const journey = new Journey(entry, new Date());
 
     expect(journey.getExitStation()).toBeNull();
@@ -23,8 +39,8 @@ describe("Journey completion", () => {
   });
 
   it("should set exitStation and endTime when setExitStation() is called", () => {
-    const entry = new Station("Londonium Bridge Station", new Zone(1));
-    const exit = new Station("Earl's Court", new Zone(2));
+    const entry = new Station("Londonium Bridge Station", zone1);
+    const exit = new Station("Earl's Court", zone2);
 
     const journey = new Journey(entry, new Date());
     journey.setExitStation(exit);
@@ -34,9 +50,9 @@ describe("Journey completion", () => {
   });
 
   it("should throw error if journey is completed twice", () => {
-    const entry = new Station("Holborn", new Zone(1));
-    const exit1 = new Station("Earl's Court", new Zone(2));
-    const exit2 = new Station("Hammersmith", new Zone(2));
+    const entry = new Station("Holborn", zone1);
+    const exit1 = new Station("Earl's Court", zone2);
+    const exit2 = new Station("Hammersmith", zone2);
 
     const journey = new Journey(entry, new Date());
     journey.setExitStation(exit1);

@@ -1,25 +1,17 @@
 import { Journey, MoysterCard, Station } from "../entities";
-import { Helper } from "../utils";
-import FareCalculationServiceImpl from "./FareCalculationServiceImpl";
+import { FareCalculationService, FareCappingService } from "../interfaces";
 
 export default class MoysterCardService {
   private journeysByDate: Record<string, Journey[]> = {};
 
-  constructor(private fareCalculator: FareCalculationServiceImpl) {}
-
-  //   startJourney(entryStation: Station, startTime = new Date()): Journey {
-  //     const journey = new Journey(entryStation, startTime);
-  //     const dateKey = Helper.getDateKey(startTime);
-
-  //     if (!this.journeysByDate[dateKey]) this.journeysByDate[dateKey] = [];
-  //     this.journeysByDate[dateKey].push(journey);
-
-  //     return journey;
-  //   }
+  constructor(
+    private fareCalculator: FareCalculationService,
+    private fareCappingService: FareCappingService
+  ) {}
 
   startJourney(card: MoysterCard, entryStation: Station, date: Date): Journey {
     const journey = new Journey(entryStation, date);
-    // You could calculate max fare if needed for incomplete journey
+    // set max fare if incomplete journey
     journey.setFare(this.fareCalculator.calculateFare(journey));
     card.addJourney(journey);
     const dateKey = journey.getStartTime().toDateString();
@@ -34,7 +26,6 @@ export default class MoysterCardService {
     exitStation: Station,
     journey: Journey
   ): Journey | null {
-    // const dateKey = Helper.getDateKey(journey.getStartTime());
     const dataKey = journey.getStartTime().toDateString();
     const journeys = this.journeysByDate[dataKey] ?? [];
     let activeJourney = journeys.find((j) => j.getExitStation() === null);
@@ -45,10 +36,18 @@ export default class MoysterCardService {
     }
     // Complete the journey
     activeJourney.setExitStation(exitStation);
-    const actualFare = this.fareCalculator.calculateFare(journey);
+    let maxFareAllocated = activeJourney.getFarePaid();
+    //Since the commuter is completing the journey, we are adding the previously cut max fare to the balance
+    card.addBalance(maxFareAllocated);
+    let actualFare = this.fareCalculator.calculateFare(journey);
+    //Setting the actual fare
     journey.setFare(actualFare);
-    // card.deduct(actualFare);
-
+    //then adjusting if fareCap reached
+    let adjustedFare = this.fareCappingService.adjustFare(journey);
+    //setting the adjusted fare
+    journey.setFare(adjustedFare);
+    //deducting the adjusted fare from the balance
+    card.deduct(adjustedFare);
     return activeJourney;
   }
 

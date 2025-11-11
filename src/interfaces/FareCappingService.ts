@@ -1,6 +1,6 @@
 import { Journey, MoysterCard } from "../entities";
 
 export interface FareCappingService {
-  adjustFare(card: MoysterCard, journey: Journey, originalFare: number): void;
+  adjustFare(journey: Journey): number;
   getWeeklyTotal(date: string): number;
 }

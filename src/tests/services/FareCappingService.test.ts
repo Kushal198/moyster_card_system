@@ -1,11 +1,5 @@
 import { MoysterCard, Journey, Station, Zone } from "../../entities";
-import {
-  //   FareCalculationService,
-  //   FareCappingService,
-  FareCappingServiceImpl,
-  MoysterCardService,
-  TravelSummaryServiceImpl,
-} from "../../services";
+import { FareCappingServiceImpl, MoysterCardService } from "../../services";
 
 import { describe, it, expect, beforeEach } from "vitest";
 import { caps } from "../../utils";
@@ -15,7 +9,6 @@ import {
   FareCappingService,
   FareRuleRepository,
   PeakHourRepository,
-  TravelSummaryService,
 } from "../../interfaces";
 import { FareRuleRepositoryImpl } from "../../repository/FareRuleRepositoryImpl";
 import { PeakHourRepositoryImpl } from "../../repository/PeakHourRepositoryImpl";
@@ -38,7 +31,7 @@ describe("CappingService - Daily Cap Scenario", () => {
     const peakRepo: PeakHourRepository = new PeakHourRepositoryImpl();
     const fareCalculator = new FareCalculationServiceImpl(fareRepo, peakRepo);
     fareCappingService = new FareCappingServiceImpl();
-    cardService = new MoysterCardService(fareCalculator);
+    cardService = new MoysterCardService(fareCalculator, fareCappingService);
   });
 
   it("should apply daily cap correctly for multiple journeys", () => {
@@ -52,14 +45,13 @@ describe("CappingService - Daily Cap Scenario", () => {
         new Date(data.time)
       );
       cardService.completeJourney(card, toStation, journey);
-      fareCappingService.adjustFare(card, journey, 0);
     }
     const today = new Date("2025-11-10T00:01:00");
     const totalCharged = cardService
       .getJourneysByDate(today.toDateString())
       .reduce((sum, j) => sum + (j.getFarePaid() ?? 0), 0);
 
-    // expect(card.getBalance()).toBe(680);
+    expect(card.getBalance()).toBe(680);
     expect(totalCharged).toBe(120);
   });
 });
@@ -68,7 +60,6 @@ describe("CappingService - Weekly Cap Scenario", () => {
   let card: MoysterCard;
   let cardService: MoysterCardService;
   let fareCappingService: FareCappingService;
-  let travelSummaryService: TravelSummaryService;
   //   let stationsMap: Record<number, Station>;
   let stations: Record<number, Station>;
 
@@ -82,15 +73,10 @@ describe("CappingService - Weekly Cap Scenario", () => {
     const peakRepo: PeakHourRepository = new PeakHourRepositoryImpl();
     const fareCalculator = new FareCalculationServiceImpl(fareRepo, peakRepo);
     fareCappingService = new FareCappingServiceImpl();
-    travelSummaryService = new TravelSummaryServiceImpl();
-    cardService = new MoysterCardService(fareCalculator);
+    cardService = new MoysterCardService(fareCalculator, fareCappingService);
   });
 
   it("should apply weekly cap correctly for multiple journeys", () => {
-    const key = `${stations[1].getZone()}-${stations[2].getZone()}`;
-    // const dailyCap = caps[key].daily;
-    // const weeklyCap = caps[key].weekly;
-
     // Simulate each journey
     for (const data of weekleyJournerys) {
       const fromStation = stations[data.fromZone];
@@ -101,15 +87,8 @@ describe("CappingService - Weekly Cap Scenario", () => {
         new Date(data.date)
       );
       cardService.completeJourney(card, toStation, journey);
-      //   const fare = FareCalculationService.calculateFare(journey);
-      //   journey.set = fare;
-      // Apply capping
-      fareCappingService.adjustFare(card, journey, 0);
     }
-    // expect(card.getBalance()).toBe(245);
-
-    // console.log("week:", travelSummaryService.getWeeklyTotal("2025-11-13"));
-    // console.log(travelSummaryService);
+    expect(card.getBalance()).toBe(245);
     expect(fareCappingService.getWeeklyTotal("2025-11-03")).toBe(600);
   });
 });
