@@ -1,7 +1,7 @@
 import { Journey, Station, Zone } from "../../entities";
 import { describe, it, expect, beforeEach } from "vitest";
 
-describe("Journey creation", () => {
+describe("Journey creation unit test", () => {
   let zone1: Zone;
   let zone2: Zone;
 
@@ -21,7 +21,7 @@ describe("Journey creation", () => {
   });
 });
 
-describe("Journey completion", () => {
+describe("Journey completion unit test", () => {
   let zone1: Zone;
   let zone2: Zone;
 

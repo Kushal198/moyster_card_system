@@ -18,6 +18,10 @@ export default class MoysterCard {
     this.journeys.push(journey);
   }
 
+  getAllJourneys(): Journey[] {
+    return this.journeys;
+  }
+
   addBalance(amount: number): void {
     if (amount <= 0) throw new Error("Invalid amount");
     this.balance += amount;

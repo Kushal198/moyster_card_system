@@ -1,22 +1,22 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { MoysterCard, Station, Zone, Journey } from "../../entities";
+import { MoysterCard, Station, Zone, Journey } from "../../../entities";
 import {
   FareCalulationServiceImpl,
-  FareCappingServiceImpl,
-} from "../../services";
-import { MoysterCardService } from "../../services";
+  FareCappingServiceV2Impl,
+} from "../../../services";
+import { MoysterCardService } from "../../../services";
 import {
   FareCappingService,
   FareRuleRepository,
   PeakHourRepository,
-} from "../../interfaces";
-import { FareRuleRepositoryImpl } from "../../repository/FareRuleRepositoryImpl";
-import { PeakHourRepositoryImpl } from "../../repository/PeakHourRepositoryImpl";
+} from "../../../interfaces";
+import { FareRuleRepositoryImpl } from "../../../repository/FareRuleRepositoryImpl";
+import { PeakHourRepositoryImpl } from "../../../repository/PeakHourRepositoryImpl";
+import { DailyCapStrategy, WeeklyCapStrategy } from "../../../strategy";
 
-describe("MoysterCard Integration with JourneyService", () => {
+describe("MoysterCard Service Integration Tests", () => {
   let card: MoysterCard;
   let cardService: MoysterCardService;
-  let fareCappingService: FareCappingService;
   let zone1: Zone;
   let zone2: Zone;
 
@@ -27,7 +27,10 @@ describe("MoysterCard Integration with JourneyService", () => {
     const fareRepo: FareRuleRepository = new FareRuleRepositoryImpl();
     const peakRepo: PeakHourRepository = new PeakHourRepositoryImpl();
     const fareCalculator = new FareCalulationServiceImpl(fareRepo, peakRepo);
-    const fareCappingService = new FareCappingServiceImpl();
+    const fareCappingService = new FareCappingServiceV2Impl([
+      new DailyCapStrategy(),
+      new WeeklyCapStrategy(),
+    ]);
     cardService = new MoysterCardService(fareCalculator, fareCappingService);
   });
 

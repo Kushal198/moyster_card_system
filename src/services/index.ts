@@ -1,9 +1,9 @@
 import FareCalulationServiceImpl from "./FareCalculationServiceImpl";
 import MoysterCardService from "./MoysterCardService";
-import FareCappingServiceImpl from "./FareCappingServiceImpl";
+import FareCappingServiceV2Impl from "./FareCappingServiceV2";
 
 export {
   FareCalulationServiceImpl,
-  FareCappingServiceImpl,
+  FareCappingServiceV2Impl,
   MoysterCardService,
 };

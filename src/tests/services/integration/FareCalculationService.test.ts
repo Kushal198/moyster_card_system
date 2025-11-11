@@ -1,24 +1,23 @@
-import { Journey, MoysterCard, Station, Zone } from "../../entities";
+import { Journey, MoysterCard, Station, Zone } from "../../../entities";
 import {
   FareCappingService,
   FareRuleRepository,
   PeakHourRepository,
-} from "../../interfaces";
-import { FareRuleRepositoryImpl } from "../../repository/FareRuleRepositoryImpl";
-import { PeakHourRepositoryImpl } from "../../repository/PeakHourRepositoryImpl";
+} from "../../../interfaces";
+import { FareRuleRepositoryImpl } from "../../../repository/FareRuleRepositoryImpl";
+import { PeakHourRepositoryImpl } from "../../../repository/PeakHourRepositoryImpl";
 import {
-  FareCalulationServiceImpl,
-  FareCappingServiceImpl,
+  FareCappingServiceV2Impl,
   MoysterCardService,
-} from "../../services";
+} from "../../../services";
 
 import { describe, it, expect, beforeEach } from "vitest";
-import FareCalculationServiceImpl from "../../services/FareCalculationServiceImpl";
+import FareCalculationServiceImpl from "../../../services/FareCalculationServiceImpl";
+import { DailyCapStrategy, WeeklyCapStrategy } from "../../../strategy";
 
 describe("Fare Calculation Service", () => {
   let card: MoysterCard;
   let cardService: MoysterCardService;
-  let fareCappingService: FareCappingService;
 
   const station1 = new Station("Londonium Bridge Station", new Zone(1));
   const station2 = new Station("Bank", new Zone(1));
@@ -30,7 +29,10 @@ describe("Fare Calculation Service", () => {
     const fareRepo: FareRuleRepository = new FareRuleRepositoryImpl();
     const peakRepo: PeakHourRepository = new PeakHourRepositoryImpl();
     const fareCalculator = new FareCalculationServiceImpl(fareRepo, peakRepo);
-    const fareCappingService = new FareCappingServiceImpl();
+    const fareCappingService = new FareCappingServiceV2Impl([
+      new DailyCapStrategy(),
+      new WeeklyCapStrategy(),
+    ]);
     cardService = new MoysterCardService(fareCalculator, fareCappingService);
   });
 

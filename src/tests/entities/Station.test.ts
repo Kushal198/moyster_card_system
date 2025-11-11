@@ -1,7 +1,7 @@
 import { Station, Zone } from "../../entities";
 import { describe, it, expect } from "vitest";
 
-describe("Station", () => {
+describe("Station unit test", () => {
   it("should create station with given name", () => {
     const station = new Station("Londonium Bridge Station", new Zone(1));
     expect(station.getName()).toBe("Londonium Bridge Station");

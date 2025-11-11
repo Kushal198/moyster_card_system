@@ -31,8 +31,7 @@ export default class MoysterCardService {
     let activeJourney = journeys.find((j) => j.getExitStation() === null);
 
     if (!activeJourney) {
-      console.log("No active journey to complete");
-      return null;
+      throw new Error("Journey is already completed");
     }
     // Complete the journey
     activeJourney.setExitStation(exitStation);
@@ -42,8 +41,7 @@ export default class MoysterCardService {
     let actualFare = this.fareCalculator.calculateFare(journey);
     //Setting the actual fare
     journey.setFare(actualFare);
-    //then adjusting if fareCap reached
-    let adjustedFare = this.fareCappingService.adjustFare(journey);
+    let adjustedFare = this.fareCappingService.adjustFare(journey, actualFare);
     //setting the adjusted fare
     journey.setFare(adjustedFare);
     //deducting the adjusted fare from the balance

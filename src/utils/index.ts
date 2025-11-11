@@ -1,4 +1,4 @@
-import { Journey } from "../entities";
+import { Journey, MoysterCard } from "../entities";
 import { Helper } from "./Helper";
 import { PeakHourRule } from "./PeakHourRule";
 import { FareCap } from "./FareCap";
@@ -72,25 +72,16 @@ function getWeekEnd(weekStart: Date): Date {
   end.setHours(23, 59, 59, 999);
   return end;
 }
-function getIsPeak(date: Date): boolean {
-  const dayType =
-    date.getDay() === 0 || date.getDay() === 6 ? "weekend" : "weekday";
-  const minutes = date.getHours() * 60 + date.getMinutes();
-
-  return peakHours[dayType].some(({ start, end }) => {
-    const [startH, startM] = start.split(":").map(Number);
-    const [endH, endM] = end.split(":").map(Number);
-
-    const startMinutes = startH * 60 + startM;
-    const endMinutes = endH * 60 + endM;
-
-    return minutes >= startMinutes && minutes <= endMinutes;
-  });
-}
 
 // private getDateKey(date: Date): string {
 //   return date.toISOString().split("T")[0];
 // }
+function getTotalChargedForWeek(card: MoysterCard, weekKey: string) {
+  return card
+    .getAllJourneys()
+    .filter((j) => Helper.getWeekKey(j.getStartTime()) === weekKey)
+    .reduce((sum, j) => sum + (j.getFarePaid() ?? 0), 0);
+}
 
 export {
   fares,
@@ -99,8 +90,8 @@ export {
   getFarthestZoneRange,
   getWeekStart,
   getWeekEnd,
-  getIsPeak,
   Helper,
   PeakHourRule,
   FareCap,
+  getTotalChargedForWeek,
 };

@@ -4,7 +4,6 @@ import {
   PeakHourRepository,
   FareCalculationService,
 } from "../interfaces";
-import { getIsPeak } from "../utils";
 
 export default class FareCalculationServiceImpl
   implements FareCalculationService
@@ -52,7 +51,7 @@ export default class FareCalculationServiceImpl
     const relevantRules = allRules.filter((rule) =>
       rule.matches(fromZone, fromZone)
     );
-    let isPeak = getIsPeak(startTime);
+    let isPeak = this.peakHourRepo.isPeak(startTime);
     if (!relevantRules.length) return 0;
     return Math.max(...relevantRules.map((r) => r.getFare(isPeak))); // peak fare as max can be changed later dynamically
   }
