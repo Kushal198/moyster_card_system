@@ -1,38 +1,64 @@
 import Station from "./Station";
 
 export default class Journey {
-  public farePaid: number = 0;
+  private farePaid: number = 0;
+
   constructor(
-    private entryStation: Station,
-    private startTime: Date,
+    private readonly entryStation: Station,
+    private readonly startTime: Date,
     private exitStation: Station | null = null,
     private endTime: Date | null = null
-  ) {}
+  ) {
+    if (exitStation && !endTime) {
+      throw new Error("End time must be provided if journey is complete");
+    }
+  }
 
-  public getEntryStation(): Station {
+  getEntryStation(): Station {
     return this.entryStation;
   }
 
-  public getExitStation(): Station | null {
+  getExitStation(): Station | null {
     return this.exitStation;
   }
 
-  public getEndTime(): Date | null {
-    return this.endTime;
+  setExitStation(exitStation: Station | null): void {
+    if (this.exitStation) {
+      throw new Error("Journey is already completed");
+    }
+    this.exitStation = exitStation;
+    this.endTime = new Date();
   }
 
   getStartTime(): Date {
     return this.startTime;
   }
 
-  public setExitStation(station: Station): void {
-    if (this.exitStation) {
-      throw new Error("Journey is already completed");
-    }
-    this.exitStation = station;
-    this.endTime = new Date();
+  getEndTime(): Date | null {
+    return this.endTime;
   }
-  public isComplete(): boolean {
+
+  getFarePaid(): number {
+    return this.farePaid;
+  }
+
+  setFare(amount: number): void {
+    if (amount < 0) throw new Error("Fare cannot be negative");
+    this.farePaid = amount;
+  }
+
+  complete(exitStation: Station, endTime: Date = new Date()): void {
+    if (this.exitStation) throw new Error("Journey is already completed");
+    this.exitStation = exitStation;
+    this.endTime = endTime;
+  }
+
+  isComplete(): boolean {
     return this.exitStation !== null;
+  }
+
+  toString(): string {
+    const end = this.isComplete() ? this.exitStation?.getName() : "In progress";
+    return `${this.entryStation.getName()} → ${end}`;
   }
 }

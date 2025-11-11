@@ -1,8 +1,11 @@
-/**
- * Services Layer
- *
- * This directory contains business logic and service implementations.
- */
-import FareCalculationService from "./FareCalculationService";
-import FareCappingService from "./FareCappingService";
-export { FareCalculationService, FareCappingService };
+import FareCalulationServiceImpl from "./FareCalculationServiceImpl";
+import TravelSummaryServiceImpl from "./TravelSummaryServiceImpl";
+import MoysterCardService from "./MoysterCardService";
+import FareCappingServiceImpl from "./FareCappingServiceImpl";
+
+export {
+  FareCalulationServiceImpl,
+  FareCappingServiceImpl,
+  TravelSummaryServiceImpl,
+  MoysterCardService,
+};

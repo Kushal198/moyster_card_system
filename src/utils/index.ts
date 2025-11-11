@@ -1,4 +1,7 @@
 import { Journey } from "../entities";
+import { Helper } from "./Helper";
+import { PeakHourRule } from "./PeakHourRule";
+import { FareCap } from "./FareCap";
 
 /**
  * Utils Directory
@@ -43,8 +46,8 @@ function getFarthestZoneRange(journeys: Journey[]): string {
   let maxRange = [1, 1];
 
   for (const j of journeys) {
-    const from = j.getEntryStation().getZone();
-    const to = j.getExitStation()?.getZone() ?? from;
+    const from = j.getEntryStation().getZone().getId();
+    const to = j.getExitStation()?.getZone().getId() ?? from;
     const low = Math.min(from, to);
     const high = Math.max(from, to);
 
@@ -85,6 +88,10 @@ function isPeak(date: Date): boolean {
   });
 }
 
+// private getDateKey(date: Date): string {
+//   return date.toISOString().split("T")[0];
+// }
+
 export {
   fares,
   peakHours,
@@ -93,4 +100,7 @@ export {
   getWeekStart,
   getWeekEnd,
   isPeak,
+  Helper,
+  PeakHourRule,
+  FareCap,
 };

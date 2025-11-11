@@ -8,5 +8,7 @@
 import MoysterCard from "./MoysterCard";
 import Station from "./Station";
 import Journey from "./Journery";
+import Zone from "./Zone";
+import FareRule from "./FareRule";
 
-export { MoysterCard, Station, Journey };
+export { MoysterCard, Station, Journey, Zone, FareRule };

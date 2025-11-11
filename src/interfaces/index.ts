@@ -4,5 +4,16 @@
  * This directory contains TypeScript interface definitions.
  *
  */
+import { PeakHourRepository } from "./PeakHourRepository";
+import { FareRuleRepository } from "./FareRuleRepository";
+import { FareCalculationService } from "./FareCalculationService";
+import { FareCappingService } from "./FareCappingService";
+import { TravelSummaryService } from "./TravelSummaryService";
 
-export {};
+export {
+  PeakHourRepository,
+  FareRuleRepository,
+  FareCalculationService,
+  FareCappingService,
+  TravelSummaryService,
+};
