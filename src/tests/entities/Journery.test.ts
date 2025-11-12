@@ -63,3 +63,18 @@ describe("Journey completion unit test", () => {
     );
   });
 });
+
+describe("Journey edge cases", () => {
+  it("should return 0 fare if not set", () => {
+    const journey = new Journey(new Station("A", new Zone(1)), new Date());
+    expect(journey.getFarePaid()).toBe(0);
+  });
+
+  it("should mark journey complete correctly", () => {
+    const journey = new Journey(new Station("A", new Zone(1)), new Date());
+    const exitStation = new Station("B", new Zone(2));
+    journey.setExitStation(exitStation);
+    journey.setEndTime(new Date());
+    expect(journey.isComplete()).toBe(true);
+  });
+});

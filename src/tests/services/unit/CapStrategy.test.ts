@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { DailyCapStrategy, WeeklyCapStrategy } from "../../../strategy";
 import { MoysterCard, Journey, Station, Zone } from "../../../entities";
 import { Strategy } from "../../../strategy/Strategy";
+import { caps } from "../../../utils";
 
 describe("DailyCapStrategy - Unit Tests", () => {
   let card: MoysterCard;
@@ -31,13 +32,13 @@ describe("DailyCapStrategy - Unit Tests", () => {
       new Station("Londonium Bridge Station", new Zone(1)),
       new Date()
     );
-    strategy.applyCap(journey1, 100); // this fills totals[key] = 100
+    strategy.applyCap(journey1, 100, caps["1-2"]); // this fills totals[key] = 100
 
     const journey2 = new Journey(
       new Station("Hammersmith", new Zone(2)),
       new Date()
     );
-    const adjustedFare = strategy.applyCap(journey2, 40);
+    const adjustedFare = strategy.applyCap(journey2, 40, caps["1-2"]);
 
     // Only 20 remaining to reach cap
     expect(adjustedFare).toBe(20);
@@ -48,13 +49,13 @@ describe("DailyCapStrategy - Unit Tests", () => {
       new Station("Londonium Bridge Station", new Zone(1)),
       new Date()
     );
-    strategy.applyCap(journey1, 120); // this fills totals[key] = 100
+    strategy.applyCap(journey1, 120, caps["1-2"]); // this fills totals[key] = 100
 
     const journey2 = new Journey(
       new Station("Hammersmith", new Zone(2)),
       new Date()
     );
-    const adjustedFare = strategy.applyCap(journey2, 40);
+    const adjustedFare = strategy.applyCap(journey2, 40, caps["1-2"]);
 
     expect(adjustedFare).toBe(0);
   });

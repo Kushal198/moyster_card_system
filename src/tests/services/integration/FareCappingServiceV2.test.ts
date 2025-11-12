@@ -1,20 +1,20 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { MoysterCard, Journey, Station, Zone } from "../../entities";
-import { MoysterCardService } from "../../services";
+import { MoysterCard, Journey, Station, Zone } from "../../../entities";
+import { MoysterCardService } from "../../../services";
 import {
   FareCappingService,
   FareRuleRepository,
   PeakHourRepository,
-} from "../../interfaces";
-import { FareRuleRepositoryImpl } from "../../repository/FareRuleRepositoryImpl";
-import { PeakHourRepositoryImpl } from "../../repository/PeakHourRepositoryImpl";
-import FareCalculationServiceImpl from "../../services/FareCalculationServiceImpl";
-import journeysData from "../../data/journeys.json";
-import weekleyJournerys from "../../data/weekleyJournerys.json";
+} from "../../../interfaces";
+import { FareRuleRepositoryImpl } from "../../../repository/FareRuleRepositoryImpl";
+import { PeakHourRepositoryImpl } from "../../../repository/PeakHourRepositoryImpl";
+import FareCalculationServiceImpl from "../../../services/FareCalculationServiceImpl";
+import journeysData from "../../../data/journeys.json";
+import weekleyJournerys from "../../../data/weekleyJournerys.json";
 
-import { DailyCapStrategy, WeeklyCapStrategy } from "../../strategy"; // adjust import path as per your folder structure
-import FareCappingServiceV2Impl from "../../services/FareCappingServiceV2";
-import { getTotalChargedForWeek } from "../../utils";
+import { DailyCapStrategy, WeeklyCapStrategy } from "../../../strategy"; // adjust import path as per your folder structure
+import FareCappingServiceV2Impl from "../../../services/FareCappingServiceV2";
+import { getTotalChargedForWeek } from "../../../utils";
 
 describe("CappingService - Daily Cap Scenario", () => {
   let card: MoysterCard;
@@ -53,10 +53,10 @@ describe("CappingService - Daily Cap Scenario", () => {
       );
       cardService.completeJourney(card, toStation, journey);
     }
+    const today = new Date("2025-11-10T00:01:00").toISOString().split("T")[0];
 
-    const today = new Date("2025-11-10T00:01:00");
     const totalCharged = cardService
-      .getJourneysByDate(today.toDateString())
+      .getJourneysByDate(today)
       .reduce((sum, j) => sum + (j.getFarePaid() ?? 0), 0);
 
     expect(card.getBalance()).toBe(680);

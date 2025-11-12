@@ -14,7 +14,8 @@ export default class MoysterCardService {
     // set max fare if incomplete journey
     journey.setFare(this.fareCalculator.calculateFare(journey));
     card.addJourney(journey);
-    const dateKey = journey.getStartTime().toDateString();
+    const dateKey = journey.getStartTime().toISOString().split("T")[0];
+    // const dateKey = journey.getStartTime().toDateString();
     if (!this.journeysByDate[dateKey]) this.journeysByDate[dateKey] = [];
     this.journeysByDate[dateKey].push(journey);
     card.deduct(journey.getFarePaid());
@@ -26,7 +27,8 @@ export default class MoysterCardService {
     exitStation: Station,
     journey: Journey
   ): Journey | null {
-    const dataKey = journey.getStartTime().toDateString();
+    // const dataKey = journey.getStartTime().toDateString();
+    const dataKey = journey.getStartTime().toISOString().split("T")[0];
     const journeys = this.journeysByDate[dataKey] ?? [];
     let activeJourney = journeys.find((j) => j.getExitStation() === null);
 
@@ -39,9 +41,14 @@ export default class MoysterCardService {
     //Since the commuter is completing the journey, we are adding the previously cut max fare to the balance
     card.addBalance(maxFareAllocated);
     let actualFare = this.fareCalculator.calculateFare(journey);
+
     //Setting the actual fare
     journey.setFare(actualFare);
-    let adjustedFare = this.fareCappingService.adjustFare(journey, actualFare);
+    let adjustedFare = this.fareCappingService.adjustFare(
+      card,
+      journey,
+      actualFare
+    );
     //setting the adjusted fare
     journey.setFare(adjustedFare);
     //deducting the adjusted fare from the balance

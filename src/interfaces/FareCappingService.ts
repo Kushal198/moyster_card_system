@@ -1,5 +1,5 @@
-import { Journey } from "../entities";
+import { Journey, MoysterCard } from "../entities";
 
 export interface FareCappingService {
-  adjustFare(journey: Journey, baseFare: number): number;
+  adjustFare(card: MoysterCard, journey: Journey, baseFare: number): number;
 }

@@ -16,7 +16,7 @@ describe("MoysterCardService - unit tests with mocks", () => {
     card = new MoysterCard(200);
 
     fareCappingService = {
-      adjustFare: vi.fn((journery, fare) => fare), // simple passthrough
+      adjustFare: vi.fn((card, journery, fare) => fare), // simple passthrough
     } as any;
 
     cardService = new MoysterCardService(
@@ -44,6 +44,10 @@ describe("MoysterCardService - unit tests with mocks", () => {
     const journey = cardService.startJourney(card, station, new Date());
     cardService.completeJourney(card, station, journey);
 
-    expect(fareCappingService.adjustFare).toHaveBeenCalledWith(journey, 30);
+    expect(fareCappingService.adjustFare).toHaveBeenCalledWith(
+      card,
+      journey,
+      30
+    );
   });
 });

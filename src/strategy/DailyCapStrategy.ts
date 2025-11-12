@@ -1,13 +1,15 @@
 import { Journey } from "../entities";
-import { Helper } from "../utils";
+import { capMap, Helper } from "../utils";
 import { Strategy } from "./Strategy";
 
 export class DailyCapStrategy implements Strategy {
   private totals: Record<string, number> = {};
-  private cap = 120;
+  private cap = 120; //default
 
-  applyCap(journey: Journey, currentFare: number): number {
+  applyCap(journey: Journey, currentFare: number, fareCap?: capMap): number {
     const key = Helper.getDateKey(journey.getStartTime());
+    this.cap = fareCap?.daily ?? this.cap;
+
     const total = this.totals[key] ?? 0;
     let adjusted = currentFare;
 

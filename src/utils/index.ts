@@ -1,7 +1,6 @@
 import { Journey, MoysterCard } from "../entities";
 import { Helper } from "./Helper";
 import { PeakHourRule } from "./PeakHourRule";
-import { FareCap } from "./FareCap";
 
 /**
  * Utils Directory
@@ -44,7 +43,6 @@ const caps: Record<string, capMap> = {
 
 function getFarthestZoneRange(journeys: Journey[]): string {
   let maxRange = [1, 1];
-
   for (const j of journeys) {
     const from = j.getEntryStation().getZone().getId();
     const to = j.getExitStation()?.getZone().getId() ?? from;
@@ -87,11 +85,11 @@ export {
   fares,
   peakHours,
   caps,
+  capMap,
   getFarthestZoneRange,
   getWeekStart,
   getWeekEnd,
   Helper,
   PeakHourRule,
-  FareCap,
   getTotalChargedForWeek,
 };

@@ -39,8 +39,7 @@ describe("MoysterCard Service Integration Tests", () => {
     const journeyDate = new Date("2025-11-10T08:00:00"); // peak hour
     const journey = cardService.startJourney(card, entry, journeyDate);
 
-    // const dateKey = journeyDate.toISOString().split("T")[0];
-    const dateKey = journey.getStartTime().toDateString();
+    const dateKey = journey.getStartTime().toISOString().split("T")[0];
     expect(cardService.getJourneysByDate(dateKey)).toHaveLength(1);
     expect(cardService.getJourneysByDate(dateKey)[0]).toBe(journey);
     expect(journey.getEntryStation().getName()).toBe(
@@ -76,8 +75,7 @@ describe("MoysterCard Service Integration Tests", () => {
     const journey2 = cardService.startJourney(card, entry2, journeyDate);
     cardService.completeJourney(card, exit2, journey2);
 
-    const dateKey = journeyDate.toDateString();
-    // const dateKey = journeyDate.toISOString().split("T")[0];
+    const dateKey = journeyDate.toISOString().split("T")[0];
     expect(cardService.getJourneysByDate(dateKey)).toHaveLength(2);
     expect(cardService.getJourneysByDate(dateKey)).toContain(journey1);
     expect(cardService.getJourneysByDate(dateKey)).toContain(journey2);

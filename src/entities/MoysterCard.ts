@@ -22,6 +22,12 @@ export default class MoysterCard {
     return this.journeys;
   }
 
+  getJourneysByDate(dateKey: string): Journey[] {
+    return this.journeys.filter(
+      (j) => j.getStartTime().toISOString().split("T")[0] === dateKey
+    );
+  }
+
   addBalance(amount: number): void {
     if (amount <= 0) throw new Error("Invalid amount");
     this.balance += amount;

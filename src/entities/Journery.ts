@@ -38,6 +38,10 @@ export default class Journey {
     return this.endTime;
   }
 
+  setEndTime(endTime: Date): void {
+    this.endTime = endTime;
+  }
+
   getFarePaid(): number {
     return this.farePaid;
   }
