@@ -13,6 +13,7 @@ export default class FareCappingServiceV2Impl implements FareCappingService {
 
     let fareCap: capMap =
       caps[getFarthestZoneRange(card.getJourneysByDate(dateKey))];
+
     for (const strategy of this.strategies) {
       adjustedFare = strategy.applyCap(journey, adjustedFare, fareCap);
     }

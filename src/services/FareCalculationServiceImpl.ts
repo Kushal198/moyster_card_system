@@ -44,8 +44,6 @@ export default class FareCalculationServiceImpl
   }
 
   public getMaxFare(fromZoneId: number, startTime: Date): number {
-    // Optional: you can define max fare logic dynamically
-    // For now, assume max fare is the highest peak fare from this zone
     const fromZone = new Zone(fromZoneId); //1
     const allRules = this.fareRuleRepo.getAllRules(); //[new FareRule(new Zone(1), new Zone(1), 30, 25)]
     const relevantRules = allRules.filter((rule) =>

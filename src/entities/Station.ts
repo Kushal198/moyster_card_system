@@ -3,11 +3,11 @@ import Zone from "./Zone";
 export default class Station {
   constructor(private readonly name: string, private readonly zone: Zone) {}
 
-  public getName(): string {
+  getName(): string {
     return this.name;
   }
 
-  public getZone(): Zone {
+  getZone(): Zone {
     return this.zone;
   }
 }

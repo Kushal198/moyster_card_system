@@ -15,7 +15,6 @@ export default class MoysterCardService {
     journey.setFare(this.fareCalculator.calculateFare(journey));
     card.addJourney(journey);
     const dateKey = journey.getStartTime().toISOString().split("T")[0];
-    // const dateKey = journey.getStartTime().toDateString();
     if (!this.journeysByDate[dateKey]) this.journeysByDate[dateKey] = [];
     this.journeysByDate[dateKey].push(journey);
     card.deduct(journey.getFarePaid());
@@ -27,9 +26,10 @@ export default class MoysterCardService {
     exitStation: Station,
     journey: Journey
   ): Journey | null {
-    // const dataKey = journey.getStartTime().toDateString();
     const dataKey = journey.getStartTime().toISOString().split("T")[0];
+    //Find all journeys on the same day
     const journeys = this.journeysByDate[dataKey] ?? [];
+    //Find the first incomplete journey
     let activeJourney = journeys.find((j) => j.getExitStation() === null);
 
     if (!activeJourney) {
@@ -37,6 +37,7 @@ export default class MoysterCardService {
     }
     // Complete the journey
     activeJourney.setExitStation(exitStation);
+    //Get the max fare allocated at the start of the journey
     let maxFareAllocated = activeJourney.getFarePaid();
     //Since the commuter is completing the journey, we are adding the previously cut max fare to the balance
     card.addBalance(maxFareAllocated);

@@ -7,17 +7,17 @@ export class DailyCapStrategy implements Strategy {
   private cap = 120; //default
 
   applyCap(journey: Journey, currentFare: number, fareCap?: capMap): number {
-    const key = Helper.getDateKey(journey.getStartTime());
+    const dateKey = Helper.getDateKey(journey.getStartTime());
     this.cap = fareCap?.daily ?? this.cap;
 
-    const total = this.totals[key] ?? 0;
+    const total = this.totals[dateKey] ?? 0;
     let adjusted = currentFare;
 
     if (total + adjusted > this.cap) {
       adjusted -= total + adjusted - this.cap;
     }
 
-    this.totals[key] = total + adjusted;
+    this.totals[dateKey] = total + adjusted;
     return adjusted;
   }
 }

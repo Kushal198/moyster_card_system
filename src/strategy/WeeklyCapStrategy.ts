@@ -7,16 +7,16 @@ export class WeeklyCapStrategy implements Strategy {
   private cap = 600;
 
   applyCap(journey: Journey, currentFare: number, fareCap?: capMap): number {
-    const key = Helper.getWeekKey(journey.getStartTime());
+    const dateKey = Helper.getWeekKey(journey.getStartTime());
     this.cap = fareCap?.weekly ?? this.cap;
-    const total = this.totals[key] ?? 0;
+    const total = this.totals[dateKey] ?? 0;
     let adjusted = currentFare;
 
     if (total + adjusted > this.cap) {
       adjusted -= total + adjusted - this.cap;
     }
 
-    this.totals[key] = total + adjusted;
+    this.totals[dateKey] = total + adjusted;
     return adjusted;
   }
 }
