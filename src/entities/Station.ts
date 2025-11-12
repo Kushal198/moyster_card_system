@@ -1,11 +1,13 @@
-export default class Station {
-  constructor(private readonly name: string, private readonly zone: number) {}
+import Zone from "./Zone";
 
-  public getName(): string {
+export default class Station {
+  constructor(private readonly name: string, private readonly zone: Zone) {}
+
+  getName(): string {
     return this.name;
   }
 
-  public getZone(): number {
+  getZone(): Zone {
     return this.zone;
   }
 }

@@ -1,4 +1,6 @@
-import { Journey } from "../entities";
+import { Journey, MoysterCard } from "../entities";
+import { Helper } from "./Helper";
+import { PeakHourRule } from "./PeakHourRule";
 
 /**
  * Utils Directory
@@ -41,10 +43,9 @@ const caps: Record<string, capMap> = {
 
 function getFarthestZoneRange(journeys: Journey[]): string {
   let maxRange = [1, 1];
-
   for (const j of journeys) {
-    const from = j.getEntryStation().getZone();
-    const to = j.getExitStation()?.getZone() ?? from;
+    const from = j.getEntryStation().getZone().getId();
+    const to = j.getExitStation()?.getZone().getId() ?? from;
     const low = Math.min(from, to);
     const high = Math.max(from, to);
 
@@ -69,28 +70,26 @@ function getWeekEnd(weekStart: Date): Date {
   end.setHours(23, 59, 59, 999);
   return end;
 }
-function isPeak(date: Date): boolean {
-  const dayType =
-    date.getDay() === 0 || date.getDay() === 6 ? "weekend" : "weekday";
-  const minutes = date.getHours() * 60 + date.getMinutes();
 
-  return peakHours[dayType].some(({ start, end }) => {
-    const [startH, startM] = start.split(":").map(Number);
-    const [endH, endM] = end.split(":").map(Number);
-
-    const startMinutes = startH * 60 + startM;
-    const endMinutes = endH * 60 + endM;
-
-    return minutes >= startMinutes && minutes <= endMinutes;
-  });
+// private getDateKey(date: Date): string {
+//   return date.toISOString().split("T")[0];
+// }
+function getTotalChargedForWeek(card: MoysterCard, weekKey: string) {
+  return card
+    .getAllJourneys()
+    .filter((j) => Helper.getWeekKey(j.getStartTime()) === weekKey)
+    .reduce((sum, j) => sum + (j.getFarePaid() ?? 0), 0);
 }
 
 export {
   fares,
   peakHours,
   caps,
+  capMap,
   getFarthestZoneRange,
   getWeekStart,
   getWeekEnd,
-  isPeak,
+  Helper,
+  PeakHourRule,
+  getTotalChargedForWeek,
 };

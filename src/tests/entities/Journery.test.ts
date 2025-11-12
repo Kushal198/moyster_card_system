@@ -1,21 +1,37 @@
-import { Journey, Station } from "../../entities";
-import { describe, it, expect } from "vitest";
+import { Journey, Station, Zone } from "../../entities";
+import { describe, it, expect, beforeEach } from "vitest";
 
-describe("Journey creation", () => {
+describe("Journey creation unit test", () => {
+  let zone1: Zone;
+  let zone2: Zone;
+
+  beforeEach(() => {
+    zone1 = new Zone(1);
+    zone2 = new Zone(2);
+  });
+
   it("should create journey with given name and zoneId", () => {
-    const entry = new Station("Londonium Bridge Station", 1);
+    const entry = new Station("Londonium Bridge Station", zone1);
     const journey = new Journey(entry, new Date());
 
     expect(journey.getEntryStation().getName()).toBe(
       "Londonium Bridge Station"
     );
-    expect(journey.getEntryStation().getZone()).toBe(1);
+    expect(journey.getEntryStation().getZone().getId()).toBe(1);
   });
 });
 
-describe("Journey completion", () => {
+describe("Journey completion unit test", () => {
+  let zone1: Zone;
+  let zone2: Zone;
+
+  beforeEach(() => {
+    zone1 = new Zone(1);
+    zone2 = new Zone(2);
+  });
+
   it("should start with null exit station and null end time", () => {
-    const entry = new Station("Londonium Bridge Station", 1);
+    const entry = new Station("Londonium Bridge Station", zone1);
     const journey = new Journey(entry, new Date());
 
     expect(journey.getExitStation()).toBeNull();
@@ -23,8 +39,8 @@ describe("Journey completion", () => {
   });
 
   it("should set exitStation and endTime when setExitStation() is called", () => {
-    const entry = new Station("Londonium Bridge Station", 1);
-    const exit = new Station("Earl's Court", 2);
+    const entry = new Station("Londonium Bridge Station", zone1);
+    const exit = new Station("Earl's Court", zone2);
 
     const journey = new Journey(entry, new Date());
     journey.setExitStation(exit);
@@ -34,9 +50,9 @@ describe("Journey completion", () => {
   });
 
   it("should throw error if journey is completed twice", () => {
-    const entry = new Station("Holborn", 1);
-    const exit1 = new Station("Earl's Court", 2);
-    const exit2 = new Station("Hammersmith", 2);
+    const entry = new Station("Holborn", zone1);
+    const exit1 = new Station("Earl's Court", zone2);
+    const exit2 = new Station("Hammersmith", zone2);
 
     const journey = new Journey(entry, new Date());
     journey.setExitStation(exit1);
@@ -45,5 +61,20 @@ describe("Journey completion", () => {
     expect(() => journey.setExitStation(exit2)).toThrow(
       "Journey is already completed"
     );
+  });
+});
+
+describe("Journey edge cases", () => {
+  it("should return 0 fare if not set", () => {
+    const journey = new Journey(new Station("A", new Zone(1)), new Date());
+    expect(journey.getFarePaid()).toBe(0);
+  });
+
+  it("should mark journey complete correctly", () => {
+    const journey = new Journey(new Station("A", new Zone(1)), new Date());
+    const exitStation = new Station("B", new Zone(2));
+    journey.setExitStation(exitStation);
+    journey.setEndTime(new Date());
+    expect(journey.isComplete()).toBe(true);
   });
 });
